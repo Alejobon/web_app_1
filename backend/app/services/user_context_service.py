@@ -152,9 +152,9 @@ async def _summarize_personality(
         {
             "role": "system",
             "content": (
-                "Extraé un resumen estable y breve del usuario para personalizar "
-                "futuras respuestas de apoyo emocional. Respondé SOLO JSON válido. "
-                "Usá estas claves: tone, language, profile_summary, goals, "
+                "Extrae un resumen estable y breve del usuario para personalizar "
+                "futuras respuestas de apoyo emocional. Responde SOLO JSON válido. "
+                "Usa estas claves: tone, language, profile_summary, goals, "
                 "stressors, coping_notes. "
                 "tone y language deben ser strings cortos. "
                 "goals, stressors y coping_notes deben ser arrays de strings cortos. "

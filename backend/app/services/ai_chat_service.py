@@ -191,7 +191,7 @@ async def _stream_crisis_response(chat_id: str, content: str) -> AsyncIterator[s
 def _safe_error_message(exc: Exception) -> str:
     """Return a user-safe error message, stripping any potential secrets."""
     if isinstance(exc, LLMUsageLimitExceeded):
-        return "El servicio de IA está con mucha demanda. Probá de nuevo en un momento."
+        return "El servicio de IA está con mucha demanda. Intenta de nuevo en un momento."
 
     error_str = str(exc).lower()
     if "api_key" in error_str or "unauthorized" in error_str or "401" in error_str:

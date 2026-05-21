@@ -28,7 +28,7 @@ function SectionFallback() {
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen emotional-bg">
+    <div className="product-ambient-bg min-h-screen">
       <header className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-2xl">
         <div className="container flex flex-col gap-4 py-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center justify-between gap-4">

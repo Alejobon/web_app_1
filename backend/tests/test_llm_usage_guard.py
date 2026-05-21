@@ -49,4 +49,4 @@ def test_safe_error_message_handles_llm_usage_limit() -> None:
         LLMUsageLimitExceeded("LLM rate limit reached"),
     )
 
-    assert message == "El servicio de IA está con mucha demanda. Probá de nuevo en un momento."
+    assert message == "El servicio de IA está con mucha demanda. Intenta de nuevo en un momento."

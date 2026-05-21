@@ -39,16 +39,16 @@ export function MicroactionsSection() {
           Herramientas breves que aparecen en el momento correcto
         </h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base md:text-lg">
-          No son extras decorativos: son accesos concretos para regularte o pasar a la acción cuando lo necesitas.
+          Son accesos concretos para regularte o pasar a la acción cuando lo necesitas.
         </p>
       </Reveal>
 
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
         {microactions.map((item, index) => (
           <Reveal key={item.title} delay={index * 120}>
-            <article className="glass-panel flex h-full flex-col rounded-[2.4rem] border border-border/60 p-6 shadow-soft transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:p-8">
+            <article className="glass-panel kinetic-card flex h-full flex-col rounded-[2.4rem] border border-border/60 p-6 shadow-soft md:p-8">
               <div className={`flex size-16 items-center justify-center rounded-[1.8rem] ${item.tone} shadow-sm`}>
-                <item.icon className="size-8" aria-hidden="true" />
+                <item.icon className="kinetic-icon size-8" aria-hidden="true" />
               </div>
               <h3 className="mt-6 text-2xl font-black tracking-tight">{item.title}</h3>
               <p className="mt-3 flex-1 text-sm leading-7 text-muted-foreground md:text-base">
@@ -59,7 +59,7 @@ export function MicroactionsSection() {
               </p>
               <Button asChild variant="outline" className="mt-8 w-full">
                 <Link to={item.href}>
-                  Explorar <ArrowRight className="size-4" />
+                  Explorar <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>
             </article>

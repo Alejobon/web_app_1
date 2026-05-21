@@ -21,7 +21,6 @@ const steps = [
 export function HowItWorksSection() {
   return (
     <section id="como-funciona" className="relative overflow-hidden py-16 md:py-24">
-      <div className="absolute inset-x-0 bottom-0 h-52 wave-blue opacity-60" />
       <div className="container relative">
         <Reveal className="space-y-10">
           <div className="mx-auto max-w-3xl space-y-4 text-center">
@@ -37,7 +36,7 @@ export function HowItWorksSection() {
           <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-3">
             {steps.map((step, index) => (
               <Reveal key={step.number} delay={index * 120} className="h-full">
-                <article className="glass-panel h-full rounded-[2.3rem] border border-border/60 p-6 shadow-soft md:p-8 lg:min-h-[19rem]">
+                <article className="glass-panel kinetic-card h-full rounded-[2.3rem] border border-border/60 p-6 shadow-soft md:p-8 lg:min-h-[19rem]">
                   <div className="flex h-full flex-col gap-8">
                     <span className="w-fit rounded-full border border-primary/20 bg-primary-soft/55 px-4 py-2 text-sm font-semibold uppercase tracking-[0.24em] text-primary/80">
                       {step.number}

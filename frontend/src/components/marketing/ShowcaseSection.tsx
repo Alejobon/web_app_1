@@ -31,16 +31,16 @@ export function ShowcaseSection() {
       <Reveal className="mx-auto max-w-3xl text-center">
         <p className="font-black text-primary">Experiencia</p>
         <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
-          Una landing que explica el producto, no solo lo decora
+          Una experiencia que te guía sin distraerte
         </h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base md:text-lg">
-          Cambiamos las imágenes genéricas por una vista más fiel del recorrido real: hablar, regularte y convertir lo importante en pasos concretos.
+          Desahógate U 2.0 conecta el recorrido real: hablar, regularte y convertir lo importante en pasos concretos.
         </p>
       </Reveal>
 
       <div className="mt-12 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch">
         <Reveal className="h-full">
-          <article className="glass-panel relative h-full overflow-hidden rounded-[2.5rem] border border-border/60 p-6 shadow-soft transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:p-8 lg:p-10">
+          <article className="glass-panel kinetic-card relative h-full overflow-hidden rounded-[2.5rem] border border-border/60 p-6 shadow-soft md:p-8 lg:p-10">
             <div className="ambient-grid absolute inset-0 opacity-60" />
             <div className="absolute -right-20 top-10 h-56 w-56 rounded-full bg-secondary/15 blur-3xl" />
             <div className="absolute -bottom-24 left-6 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
@@ -64,7 +64,7 @@ export function ShowcaseSection() {
                 {journey.map((item) => (
                   <div key={item.title} className="rounded-[2rem] border border-border/60 bg-background/70 p-5 shadow-sm backdrop-blur">
                     <div className="flex size-12 items-center justify-center rounded-[1.4rem] bg-primary-soft text-primary">
-                      <item.icon className="size-6" aria-hidden="true" />
+                      <item.icon className="kinetic-icon size-6" aria-hidden="true" />
                     </div>
                     <h4 className="mt-5 text-xl font-black">{item.title}</h4>
                     <p className="mt-3 text-sm leading-6 text-muted-foreground">{item.text}</p>
@@ -88,28 +88,28 @@ export function ShowcaseSection() {
         </Reveal>
 
         <Reveal delay={120} className="h-full">
-          <article className="glass-panel flex h-full flex-col rounded-[2.5rem] border border-border/60 p-6 shadow-soft md:p-8">
+          <article className="glass-panel kinetic-card flex h-full flex-col rounded-[2.5rem] border border-border/60 p-6 shadow-soft md:p-8">
             <div className="flex items-center gap-3">
               <div className="flex size-12 items-center justify-center rounded-[1.5rem] bg-accent-soft text-accent">
-                <Sparkles className="size-6" aria-hidden="true" />
+                <Sparkles className="kinetic-icon size-6" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-sm font-black">Diseño con intención</p>
-                <p className="text-xs text-muted-foreground">Sereno, claro y usable en escritorio.</p>
+                <p className="text-sm font-black">Acompañamiento con intención</p>
+                <p className="text-xs text-muted-foreground">Calma, claridad y acciones concretas.</p>
               </div>
             </div>
 
             <div className="mt-8 space-y-4">
               {interfaceNotes.map((note) => (
                 <div key={note} className="flex gap-3 rounded-[1.5rem] border border-border/60 bg-background/60 p-4">
-                  <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+                  <CheckCircle2 className="kinetic-icon mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
                   <p className="text-sm leading-6 text-muted-foreground">{note}</p>
                 </div>
               ))}
             </div>
 
             <div className="mt-auto pt-8">
-              <div className="rounded-[2rem] bg-foreground p-5 text-background shadow-soft dark:bg-card dark:text-foreground">
+              <div className="rounded-[2rem] border border-primary/20 bg-primary-soft/45 p-5 text-foreground shadow-soft dark:bg-background/70">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] opacity-70">
                   Prioridad
                 </p>

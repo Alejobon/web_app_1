@@ -19,10 +19,6 @@ const supportFlow = [
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden pb-12 pt-12 md:pb-20 md:pt-24 lg:pb-28 lg:pt-28">
-      <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/10 via-secondary/6 to-transparent" />
-      <div className="animate-drift absolute left-[-12%] top-28 h-80 w-80 wave-yellow opacity-70" />
-      <div className="animate-float-slow absolute bottom-[-8rem] right-[-12%] h-[28rem] w-[34rem] wave-blue opacity-80" />
-
       <div className="container relative space-y-12 md:space-y-16">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:gap-14">
           <Reveal className="space-y-6 text-center lg:text-left">
@@ -46,7 +42,7 @@ export function HeroSection() {
             <div className="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link to="/login">
-                  Empezar gratis <ArrowRight className="size-4" />
+                  Empezar gratis <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
@@ -56,7 +52,7 @@ export function HeroSection() {
           </Reveal>
 
           <Reveal delay={120} className="relative">
-            <div className="glass-panel relative overflow-hidden rounded-[2.6rem] border border-border/60 p-5 shadow-soft transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-6 md:p-8">
+            <div className="glass-panel kinetic-card relative overflow-hidden rounded-[2.6rem] border border-border/60 p-5 shadow-soft sm:p-6 md:p-8">
               <div className="ambient-grid absolute inset-0 opacity-55" />
               <div className="hero-image-wash absolute inset-0" />
               <div className="absolute left-[8%] top-[12%] h-28 w-28 rounded-full bg-primary/10 blur-3xl" />
@@ -79,7 +75,7 @@ export function HeroSection() {
                   <div className="rounded-[2rem] border border-border/60 bg-card/80 p-5 shadow-sm backdrop-blur">
                     <div className="flex items-center gap-3">
                       <div className="flex size-11 items-center justify-center rounded-full bg-primary-soft text-primary">
-                        <CheckCircle2 className="size-5" aria-hidden="true" />
+                        <CheckCircle2 className="kinetic-icon size-5" aria-hidden="true" />
                       </div>
                       <div>
                         <p className="text-sm font-black">Hoy puedo empezar por</p>
@@ -90,7 +86,7 @@ export function HeroSection() {
                       {supportFlow.map((item) => (
                         <div key={item.title} className="rounded-[1.35rem] border border-border/50 bg-background/65 p-3">
                           <div className="flex items-center gap-3">
-                            <item.icon className="size-4 text-primary" aria-hidden="true" />
+                      <item.icon className="size-4 text-primary" aria-hidden="true" />
                             <p className="text-sm font-black">{item.title}</p>
                           </div>
                           <p className="mt-1 text-xs leading-5 text-muted-foreground">{item.text}</p>
@@ -105,7 +101,7 @@ export function HeroSection() {
                     <Reveal
                       key={item.value}
                       delay={180 + index * 100}
-                      className="rounded-[1.75rem] border border-border/60 bg-card/78 p-4 shadow-sm backdrop-blur transition-all duration-500 ease-out hover:-translate-y-0.5 hover:bg-card/88"
+                      className="kinetic-card rounded-[1.75rem] border border-border/60 bg-card/78 p-4 shadow-sm backdrop-blur hover:bg-card/88"
                     >
                       <p className="text-2xl font-black text-foreground">{item.value}</p>
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.label}</p>

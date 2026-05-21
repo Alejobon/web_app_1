@@ -31,16 +31,16 @@ export function TestimonialsSection() {
           Expectativas claras para usarlo bien
         </h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">
-          Esto no son testimonios inventados. Son principios de producto para que sepas qué esperar desde el inicio.
+          Estos principios de uso te ayudan a saber qué esperar desde el inicio.
         </p>
       </div>
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         {principles.map((item) => (
-          <Card key={item.title} className="border-border/60 bg-card/85 shadow-sm backdrop-blur">
+          <Card key={item.title} className="kinetic-card border-border/60 bg-card/85 shadow-sm backdrop-blur">
             <CardContent className="flex h-full flex-col p-6">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex size-12 items-center justify-center rounded-[1.4rem] bg-primary-soft text-primary">
-                  <item.icon className="size-6" aria-hidden="true" />
+                  <item.icon className="kinetic-icon size-6" aria-hidden="true" />
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   {item.label}

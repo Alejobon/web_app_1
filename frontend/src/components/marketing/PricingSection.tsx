@@ -74,8 +74,8 @@ export function PricingSection() {
             key={tier.name}
             className={
               tier.highlighted
-                ? "relative overflow-hidden border-primary/40 bg-primary-soft/45 shadow-soft md:-translate-y-2"
-                : "relative overflow-hidden border-border/60 bg-card/85 shadow-sm backdrop-blur"
+                ? "kinetic-card relative overflow-hidden border-primary/40 bg-primary-soft/45 shadow-soft"
+                : "kinetic-card relative overflow-hidden border-border/60 bg-card/85 shadow-sm backdrop-blur"
             }
           >
             <CardContent className="flex flex-col p-6">
@@ -93,7 +93,7 @@ export function PricingSection() {
               <ul className="mt-6 flex flex-1 flex-col gap-3">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2 text-sm">
-                    <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                    <Check className="kinetic-icon mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
                     {feature}
                   </li>
                 ))}

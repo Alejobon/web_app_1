@@ -47,10 +47,10 @@ export function FeaturesSection() {
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
         {featureStories.map((item, index) => (
           <Reveal key={item.title} delay={index * 120} className="h-full">
-            <article className="glass-panel flex h-full flex-col gap-6 overflow-hidden rounded-[2.5rem] border border-border/60 p-6 shadow-soft transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:p-8 lg:min-h-[31rem]">
+            <article className="glass-panel kinetic-card flex h-full flex-col gap-6 overflow-hidden rounded-[2.5rem] border border-border/60 p-6 shadow-soft md:p-8 lg:min-h-[31rem]">
               <div className="flex items-start justify-between gap-5">
                 <div className={`flex size-16 items-center justify-center rounded-[1.8rem] ${item.tone} shadow-sm`}>
-                  <item.icon className="size-8" aria-hidden="true" />
+                  <item.icon className="kinetic-icon size-8" aria-hidden="true" />
                 </div>
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
                   {item.eyebrow}
