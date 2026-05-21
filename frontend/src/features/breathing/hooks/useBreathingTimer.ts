@@ -3,11 +3,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export type BreathingPhase = "inhale" | "hold" | "exhale" | "rest";
 
-const PHASES: Array<{ phase: BreathingPhase; duration: number; label: string }> = [
-  { phase: "inhale", duration: 4, label: "Inhalá..." },
-  { phase: "hold", duration: 7, label: "Mantené..." },
-  { phase: "exhale", duration: 8, label: "Exhalá..." },
-  { phase: "rest", duration: 1, label: "..." },
+const PHASES: Array<{
+  phase: BreathingPhase;
+  duration: number;
+  label: string;
+}> = [
+  { phase: "inhale", duration: 4, label: "Inhala..." },
+  { phase: "hold", duration: 7, label: "Espera..." },
+  { phase: "exhale", duration: 8, label: "Exhala..." },
+  { phase: "rest", duration: 1, label: "Descanza" },
 ];
 
 const TOTAL_CYCLES = 4;

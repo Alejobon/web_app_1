@@ -55,8 +55,8 @@ export function BreathingPage() {
         {timer.isRunning
           ? `Ciclo ${timer.currentCycle + 1} de ${timer.totalCycles}`
           : timer.currentCycle >= timer.totalCycles
-            ? "¡Listo! Respiraste 4 ciclos."
-            : "Presioná para empezar"}
+            ? "¡Felicitaciones Completaste 4 ciclos!"
+            : "Presiona para empezar"}
       </p>
 
       {/* Controls */}
