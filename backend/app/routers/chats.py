@@ -147,5 +147,6 @@ async def stream_chat_message(
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",  # Disable nginx buffering
+            
         },
     )
