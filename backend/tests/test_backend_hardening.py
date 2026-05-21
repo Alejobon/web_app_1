@@ -97,6 +97,13 @@ def test_delete_chat_invalidates_all_message_cache_patterns(monkeypatch) -> None
     async def fake_remove_chat(user_id: str, chat_id: str) -> None:
         return None
 
+    async def fake_find_user(user_id: str):
+        return {
+            "userId": user_id,
+            "authProvider": "supabase",
+            "authProviderUserId": "supabase-user-1",
+        }
+
     async def fake_delete_by_chat(chat_id: str) -> int:
         return 2
 
@@ -110,6 +117,7 @@ def test_delete_chat_invalidates_all_message_cache_patterns(monkeypatch) -> None
         deleted_patterns.append(pattern)
 
     monkeypatch.setattr(chat_service.chat_repository, "find_by_id", fake_find_chat)
+    monkeypatch.setattr(chat_service.user_repository, "find_by_id", fake_find_user)
     monkeypatch.setattr(chat_service.user_repository, "remove_chat", fake_remove_chat)
     monkeypatch.setattr(chat_service.message_repository, "delete_by_chat", fake_delete_by_chat)
     monkeypatch.setattr(chat_service.chat_repository, "delete", fake_delete_chat)
@@ -121,5 +129,7 @@ def test_delete_chat_invalidates_all_message_cache_patterns(monkeypatch) -> None
     deleted = asyncio.run(chat_service.delete("chat-1"))
 
     assert deleted is True
+    assert "desahogate:user:user-1" in deleted_keys
+    assert "desahogate:auth:supabase:supabase-user-1:user" in deleted_keys
     assert "desahogate:msg:latest:chat-1" in deleted_patterns
     assert "desahogate:msg:history:chat-1:*" in deleted_patterns

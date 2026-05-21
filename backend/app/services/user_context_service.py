@@ -70,6 +70,19 @@ async def refresh_user_context(user_id: str) -> dict[str, Any]:
     return await warm_user_context(user)
 
 
+def schedule_user_context_refresh(user_id: str) -> None:
+    """Refresh the prompt-context cache in the background."""
+    asyncio.create_task(_safe_refresh_user_context(user_id))
+
+
+async def _safe_refresh_user_context(user_id: str) -> None:
+    """Run context refresh without breaking the request path."""
+    try:
+        await refresh_user_context(user_id)
+    except Exception:
+        logger.exception("Failed async user-context refresh for user %s", user_id)
+
+
 async def maybe_schedule_context_refresh(chat_id: str, user_id: str) -> None:
     """Refresh personality/context every N user messages in the active chat."""
     user_message_count = await message_repository.count_by_chat(chat_id, role="user")

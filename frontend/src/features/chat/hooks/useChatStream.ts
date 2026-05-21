@@ -15,16 +15,19 @@ export function useChatStream(chatId: string | null) {
       startStreaming(chatId);
       return streamChatMessage({ chatId, content, onToken: appendToken });
     },
-    onSettled: async () => {
+    onSettled: () => {
+      setGenerating(false);
+
       if (chatId) {
-        await Promise.all([
+        void Promise.all([
           queryClient.invalidateQueries({ queryKey: ["chats"] }),
           queryClient.invalidateQueries({ queryKey: ["chats", chatId, "latest-message"] }),
           queryClient.invalidateQueries({ queryKey: ["chats", chatId, "messages"] }),
-        ]);
+        ]).finally(resetStreaming);
+        return;
       }
+
       resetStreaming();
-      setGenerating(false);
     },
   });
 }

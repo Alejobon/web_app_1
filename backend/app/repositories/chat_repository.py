@@ -15,6 +15,13 @@ from app.db.helpers import get_db, new_id, now_utc
 CHATS = "chats"
 
 
+async def ensure_indexes() -> None:
+    """Create indexes for chat list and lookup queries."""
+    db = get_db()
+    await db[CHATS].create_index("chatId", unique=True)
+    await db[CHATS].create_index([("userId", 1), ("createdAt", DESCENDING)])
+
+
 async def list_all(user_id: str | None = None) -> list[dict[str, Any]]:
     """Return chats, optionally filtered by userId. Newest first."""
     db = get_db()

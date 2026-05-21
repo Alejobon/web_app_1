@@ -11,6 +11,16 @@ from app.db.helpers import get_db, new_id, now_utc
 COLLECTION = "tasks"
 
 
+async def ensure_indexes() -> None:
+    """Create indexes for task list, lookup, and status-filter queries."""
+    db = get_db()
+    await db[COLLECTION].create_index("taskId", unique=True)
+    await db[COLLECTION].create_index([("userId", 1), ("createdAt", DESCENDING)])
+    await db[COLLECTION].create_index(
+        [("userId", 1), ("status", 1), ("createdAt", DESCENDING)],
+    )
+
+
 async def list_all(
     user_id: str | None = None,
     task_status: str | None = None,

@@ -139,10 +139,10 @@ function MessageBubble({
 }
 
 function Composer({
-  disabled,
+  sendDisabled,
   onSubmit,
 }: {
-  disabled: boolean;
+  sendDisabled: boolean;
   onSubmit: (content: string) => Promise<void>;
 }) {
   const [draft, setDraft] = useState("");
@@ -165,7 +165,7 @@ function Composer({
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const content = draft.trim();
-    if (!content || disabled) return;
+    if (!content || sendDisabled) return;
     setEmojiOpen(false);
     setDraft("");
     await onSubmit(content);
@@ -183,8 +183,6 @@ function Composer({
   }
 
   function insertEmoji(emoji: string) {
-    if (disabled) return;
-
     const textarea = textareaRef.current;
     const selectionStart = textarea?.selectionStart ?? draft.length;
     const selectionEnd = textarea?.selectionEnd ?? selectionStart;
@@ -214,7 +212,6 @@ function Composer({
           aria-expanded={emojiOpen}
           aria-haspopup="dialog"
           aria-controls="chat-emoji-picker"
-          disabled={disabled}
           onClick={() => setEmojiOpen((current) => !current)}
         >
           <Smile className="h-5 w-5" />
@@ -250,7 +247,6 @@ function Composer({
         rows={1}
         autoFocus
         value={draft}
-        disabled={disabled}
         placeholder="Escribí lo que necesitás soltar..."
         className="max-h-40 min-h-10 flex-1 resize-none bg-transparent px-2 py-2.5 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70"
         onChange={(event) => setDraft(event.target.value)}
@@ -261,14 +257,20 @@ function Composer({
         type="submit"
         size="icon"
         className="shrink-0 rounded-full"
-        disabled={disabled || !draft.trim()}
+        disabled={sendDisabled || !draft.trim()}
         aria-label="Enviar"
       >
-        {disabled ? <Loader2 className="h-5 w-5 animate-spin" /> : <SendHorizontal className="h-5 w-5" />}
+        {sendDisabled ? <Loader2 className="h-5 w-5 animate-spin" /> : <SendHorizontal className="h-5 w-5" />}
       </Button>
     </form>
   );
 }
+
+type OptimisticUserMessage = {
+  content: string;
+  messageCountBefore: number;
+  pending: boolean;
+};
 
 export function AssistantThread({ chatId }: { chatId: string }) {
   const location = useLocation();
@@ -278,21 +280,29 @@ export function AssistantThread({ chatId }: { chatId: string }) {
   const streamingChatId = useChatStore((state) => state.streamingChatId);
   const streamingMessage = useChatStore((state) => state.streamingMessage);
   const isGenerating = useChatStore((state) => state.isGenerating);
-  const [optimisticUserMessage, setOptimisticUserMessage] = useState<string | null>(null);
+  const [optimisticUserMessage, setOptimisticUserMessage] = useState<OptimisticUserMessage | null>(null);
   const activeStream = streamingChatId === chatId;
   const taskMode = new URLSearchParams(location.search).get("mode") === "tasks";
-  const disabled = stream.isPending || (isGenerating && activeStream);
+  const sendDisabled = stream.isPending || (isGenerating && activeStream);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
-  }, [messages.length, optimisticUserMessage, streamingMessage]);
+  }, [messages.length, optimisticUserMessage?.content, streamingMessage]);
+
+  const optimisticMessageAlreadyPersisted =
+    optimisticUserMessage &&
+    messages.length > optimisticUserMessage.messageCountBefore &&
+    messages.some(
+      (message) => message.role === "user" && displayChatContent(message).trim() === optimisticUserMessage.content.trim(),
+    );
+  const visibleOptimisticUserMessage = optimisticMessageAlreadyPersisted ? null : optimisticUserMessage;
 
   async function handleSubmit(content: string) {
-    setOptimisticUserMessage(content);
+    setOptimisticUserMessage({ content, messageCountBefore: messages.length, pending: true });
     try {
       await stream.mutateAsync(buildChatPrompt(content, location.search));
     } finally {
-      setOptimisticUserMessage(null);
+      setOptimisticUserMessage((current) => (current?.content === content ? { ...current, pending: false } : current));
     }
   }
 
@@ -308,7 +318,7 @@ export function AssistantThread({ chatId }: { chatId: string }) {
 
         {isError && <ErrorState message="No pude cargar este chat. Probá de nuevo." />}
 
-        {!isLoading && !isError && messages.length === 0 && !optimisticUserMessage && !activeStream && <EmptyThread />}
+        {!isLoading && !isError && messages.length === 0 && !visibleOptimisticUserMessage && !activeStream && <EmptyThread />}
 
         {!isLoading &&
           !isError &&
@@ -323,8 +333,13 @@ export function AssistantThread({ chatId }: { chatId: string }) {
             ),
           )}
 
-        {optimisticUserMessage && (
-          <MessageBubble role="user" content={optimisticUserMessage} pending={stream.isPending} taskMode={taskMode} />
+        {visibleOptimisticUserMessage && (
+          <MessageBubble
+            role="user"
+            content={visibleOptimisticUserMessage.content}
+            pending={visibleOptimisticUserMessage.pending && stream.isPending}
+            taskMode={taskMode}
+          />
         )}
 
         {activeStream && (streamingMessage || stream.isPending) && (
@@ -337,7 +352,7 @@ export function AssistantThread({ chatId }: { chatId: string }) {
       </div>
 
       <div className="bg-gradient-to-t from-card via-card/95 to-transparent p-3 pt-2.5 sm:p-4 sm:pt-3 md:p-6 md:pt-4">
-        <Composer disabled={disabled} onSubmit={handleSubmit} />
+        <Composer sendDisabled={sendDisabled} onSubmit={handleSubmit} />
       </div>
     </div>
   );

@@ -51,17 +51,25 @@ async def find_or_create_from_auth(
     *,
     auth_provider_user_id: str,
     email: str | None,
+    auth_provider: str = "supabase",
 ) -> dict[str, Any]:
     """Return the internal user mapped to a Supabase identity.
 
     If the Supabase user logs in for the first time, create a Mongo user
     that keeps our internal ``userId`` while storing the external auth link.
     """
+    auth_cache_key = CacheKeys.auth_user(auth_provider, auth_provider_user_id)
+    cached_user = await cache.get(auth_cache_key)
+    if cached_user is not None:
+        return cached_user
+
     existing = await user_repository.find_by_auth_provider_user_id(
         auth_provider_user_id,
+        auth_provider=auth_provider,
     )
     if existing is not None:
         await user_context_service.warm_user_context(existing)
+        await cache.set(auth_cache_key, existing, get_settings().redis_ttl_seconds)
         return existing
 
     username = _username_from_auth(email, auth_provider_user_id)
@@ -70,36 +78,46 @@ async def find_or_create_from_auth(
             auth_provider_user_id=auth_provider_user_id,
             email=email,
             username=username,
+            auth_provider=auth_provider,
         )
         await user_context_service.warm_user_context(created)
+        await cache.set(auth_cache_key, created, get_settings().redis_ttl_seconds)
         return created
     except DuplicateKeyError:
         created = await user_repository.create_from_auth(
             auth_provider_user_id=auth_provider_user_id,
             email=email,
             username=f"{username}-{auth_provider_user_id[:8]}",
+            auth_provider=auth_provider,
         )
         await user_context_service.warm_user_context(created)
+        await cache.set(auth_cache_key, created, get_settings().redis_ttl_seconds)
         return created
 
 
 async def update(user_id: str, update_data: dict[str, Any]) -> dict[str, Any] | None:
     """Patch user fields. Returns updated doc or None if not found."""
+    existing = await user_repository.find_by_id(user_id)
     doc = await user_repository.update(user_id, update_data)
     if doc is not None:
         await cache.delete(CacheKeys.user(user_id))
         await cache.delete(CacheKeys.user_context(user_id))
+        await _invalidate_auth_user_cache(existing or doc)
+        await _invalidate_auth_user_cache(doc)
         await user_context_service.warm_user_context(doc)
     return doc
 
 
 async def delete(user_id: str) -> bool:
     """Delete a user by userId. Returns True if deleted, False if not found."""
+    existing = await user_repository.find_by_id(user_id)
     deleted = await user_repository.delete(user_id)
     if deleted:
         await cache.delete(CacheKeys.user(user_id))
         await cache.delete(CacheKeys.user_chats(user_id))
         await cache.delete(CacheKeys.user_context(user_id))
+        await cache.delete_pattern(CacheKeys.user_tasks_pattern(user_id))
+        await _invalidate_auth_user_cache(existing)
     return deleted
 
 
@@ -108,3 +126,16 @@ def _username_from_auth(email: str | None, auth_provider_user_id: str) -> str:
     if email and "@" in email:
         return email.split("@", 1)[0]
     return f"user-{auth_provider_user_id[:8]}"
+
+
+async def _invalidate_auth_user_cache(user: dict[str, Any] | None) -> None:
+    """Invalidate the external-auth user mapping when the user changes."""
+    if user is None:
+        return
+
+    auth_provider = user.get("authProvider")
+    auth_provider_user_id = user.get("authProviderUserId")
+    if not auth_provider or not auth_provider_user_id:
+        return
+
+    await cache.delete(CacheKeys.auth_user(str(auth_provider), str(auth_provider_user_id)))

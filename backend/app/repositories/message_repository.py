@@ -11,6 +11,16 @@ from app.db.helpers import get_db, new_id, now_utc
 COLLECTION = "messages"
 
 
+async def ensure_indexes() -> None:
+    """Create indexes for message history, latest-message, and lookup queries."""
+    db = get_db()
+    await db[COLLECTION].create_index("messageId", unique=True)
+    await db[COLLECTION].create_index([("chatId", 1), ("createdAt", DESCENDING)])
+    await db[COLLECTION].create_index(
+        [("chatId", 1), ("role", 1), ("createdAt", DESCENDING)],
+    )
+
+
 async def list_all(
     chat_id: str | None = None,
     limit: int = 50,

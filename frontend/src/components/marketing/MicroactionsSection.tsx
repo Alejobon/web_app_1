@@ -8,6 +8,7 @@ const microactions = [
     icon: Wind,
     title: "Respiración",
     description: "Ejercicios guiados para regular la intensidad del momento.",
+    detail: "Útil antes de responder un mensaje, entrar a clase o volver a estudiar.",
     href: "/p/breathing",
     tone: "bg-primary-soft text-primary",
   },
@@ -15,6 +16,7 @@ const microactions = [
     icon: Brain,
     title: "Meditación",
     description: "Pausas breves para recuperar foco y volver a sentir espacio interno.",
+    detail: "Pensada para momentos de cansancio mental o ruido emocional.",
     href: "/p/meditation",
     tone: "bg-secondary-soft text-secondary",
   },
@@ -22,6 +24,7 @@ const microactions = [
     icon: ListTodo,
     title: "Tareas",
     description: "Pasos concretos para convertir sensación en dirección práctica.",
+    detail: "Ideal cuando todo parece urgente y necesitas priorizar.",
     href: "/app/tasks",
     tone: "bg-accent-soft text-accent",
   },
@@ -36,7 +39,7 @@ export function MicroactionsSection() {
           Herramientas breves que aparecen en el momento correcto
         </h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base md:text-lg">
-          No son extras decorativos: son accesos concretos para regularte o pasar a la acción cuando lo necesitás.
+          No son extras decorativos: son accesos concretos para regularte o pasar a la acción cuando lo necesitas.
         </p>
       </Reveal>
 
@@ -45,11 +48,14 @@ export function MicroactionsSection() {
           <Reveal key={item.title} delay={index * 120}>
             <article className="glass-panel flex h-full flex-col rounded-[2.4rem] border border-border/60 p-6 shadow-soft transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:p-8">
               <div className={`flex size-16 items-center justify-center rounded-[1.8rem] ${item.tone} shadow-sm`}>
-                <item.icon className="size-8" />
+                <item.icon className="size-8" aria-hidden="true" />
               </div>
               <h3 className="mt-6 text-2xl font-black tracking-tight">{item.title}</h3>
               <p className="mt-3 flex-1 text-sm leading-7 text-muted-foreground md:text-base">
                 {item.description}
+              </p>
+              <p className="mt-5 rounded-[1.5rem] border border-border/60 bg-background/60 p-4 text-sm leading-6 text-foreground/85">
+                {item.detail}
               </p>
               <Button asChild variant="outline" className="mt-8 w-full">
                 <Link to={item.href}>

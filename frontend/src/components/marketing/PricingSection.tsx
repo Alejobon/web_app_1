@@ -8,6 +8,7 @@ const tiers = [
     name: "Gratis",
     price: "$0",
     period: "/mes",
+    badge: "Disponible hoy",
     description: "Para empezar hoy con acompañamiento, pausa y primeros pasos más claros.",
     features: [
       "Chat de acompañamiento",
@@ -17,12 +18,13 @@ const tiers = [
     ],
     cta: "Empezar gratis",
     href: "/login",
-    highlighted: false,
+    highlighted: true,
   },
   {
     name: "Plus Estudiante",
     price: "Pronto",
     period: "",
+    badge: "Próximamente",
     description: "Más profundidad y seguimiento para estudiantes que quieran sostener el proceso con más apoyo.",
     features: [
       "Tracking emocional",
@@ -32,14 +34,15 @@ const tiers = [
     ],
     cta: "Próximamente",
     href: "/login",
-    highlighted: true,
+    highlighted: false,
     soon: true,
   },
   {
     name: "Premium Universitario",
     price: "Pronto",
     period: "",
-    description: "Una oferta más robusta pensada para ampliar el acompañamiento y sumar herramientas futuras.",
+    badge: "Próximamente",
+    description: "Una oferta futura para universidades que quieran ampliar el acompañamiento y sumar herramientas institucionales.",
     features: [
       "Todo lo de Plus Estudiante",
       "Herramientas avanzadas",
@@ -59,7 +62,7 @@ export function PricingSection() {
       <div className="mx-auto max-w-2xl text-center">
         <p className="font-black text-primary">Planes</p>
         <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
-          Empezá gratis y conocé lo que viene
+          Empieza gratis y conoce lo que viene
         </h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">
           El plan gratuito ya está listo para usar, y los planes Plus Estudiante y Premium Universitario quedan visibles como ofertas próximas.
@@ -71,16 +74,14 @@ export function PricingSection() {
             key={tier.name}
             className={
               tier.highlighted
-                ? "relative overflow-hidden border-primary/40 bg-primary-soft/45 shadow-soft"
+                ? "relative overflow-hidden border-primary/40 bg-primary-soft/45 shadow-soft md:-translate-y-2"
                 : "relative overflow-hidden border-border/60 bg-card/85 shadow-sm backdrop-blur"
             }
           >
-            {tier.soon && (
-              <div className="absolute right-4 top-4 rounded-full border border-primary/20 bg-card/80 px-3 py-1 text-xs font-black text-primary shadow-sm backdrop-blur">
-                Próximamente
-              </div>
-            )}
             <CardContent className="flex flex-col p-6">
+              <div className="mb-5 w-fit rounded-full border border-primary/20 bg-card/80 px-3 py-1 text-xs font-black text-primary shadow-sm backdrop-blur">
+                {tier.badge}
+              </div>
               <h3 className="text-xl font-black">{tier.name}</h3>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-3xl font-black">{tier.price}</span>
@@ -97,15 +98,15 @@ export function PricingSection() {
                   </li>
                 ))}
               </ul>
-              <Button asChild className="mt-6 w-full" variant={tier.highlighted ? "default" : "outline"}>
-                <Link
-                  to={tier.href}
-                  aria-disabled={tier.soon ? "true" : undefined}
-                  className={tier.soon ? "pointer-events-none" : undefined}
-                >
+              {tier.soon ? (
+                <Button className="mt-6 w-full" variant="outline" disabled>
                   {tier.cta}
-                </Link>
-              </Button>
+                </Button>
+              ) : (
+                <Button asChild className="mt-6 w-full" variant={tier.highlighted ? "default" : "outline"}>
+                  <Link to={tier.href}>{tier.cta}</Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))}

@@ -1,28 +1,37 @@
 import { Plus, Trash2 } from "lucide-react";
+import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
-import { useChats, useCreateChat, useDeleteChat, useLatestChatMessage } from "@/features/chat/hooks/useChats";
+import { useChats, useCreateChat, useDeleteChat } from "@/features/chat/hooks/useChats";
 import { previewChatContent } from "@/features/chat/lib/chat-content";
 import { useChatStore } from "@/features/chat/store/chat.store";
+import type { ChatMessage } from "@/features/chat/chat.types";
+
+function getCachedChatTitle(queryClient: QueryClient, chatId: string) {
+  const latestMessage = queryClient.getQueryData<ChatMessage>(["chats", chatId, "latest-message"]);
+  if (latestMessage?.content) return previewChatContent(latestMessage.content);
+
+  const messages = queryClient.getQueryData<ChatMessage[]>(["chats", chatId, "messages"]);
+  const lastVisibleMessage = messages ? [...messages].reverse().find((message) => message.role !== "system") : undefined;
+  return lastVisibleMessage?.content ? previewChatContent(lastVisibleMessage.content) : "Chat nuevo";
+}
 
 function ChatListItem({
   chat,
+  title,
   active,
   deleteDisabled,
   onDelete,
   onSelect,
 }: {
   chat: { chatId: string; createdAt: string };
+  title: string;
   active: boolean;
   deleteDisabled: boolean;
   onDelete: (chatId: string) => void;
   onSelect: () => void;
 }) {
-  const { data: latestMessage } = useLatestChatMessage(chat.chatId);
-
-  const title = latestMessage?.content ? previewChatContent(latestMessage.content) : "Chat nuevo";
-
   const subtitle = new Date(chat.createdAt).toLocaleString("es-AR", {
     day: "2-digit",
     month: "2-digit",
@@ -55,6 +64,7 @@ function ChatListItem({
 
 export function ChatSidebar({ className, onNavigate }: { className?: string; onNavigate?: () => void }) {
   const { data: chats = [] } = useChats();
+  const queryClient = useQueryClient();
   const createChat = useCreateChat();
   const deleteChat = useDeleteChat();
   const location = useLocation();
@@ -107,6 +117,7 @@ export function ChatSidebar({ className, onNavigate }: { className?: string; onN
           <ChatListItem
             key={chat.chatId}
             chat={chat}
+            title={getCachedChatTitle(queryClient, chat.chatId)}
             active={activeChatId === chat.chatId}
             deleteDisabled={deleteChat.isPending || streamingChatId === chat.chatId}
             onDelete={handleDelete}

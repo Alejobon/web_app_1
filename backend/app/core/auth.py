@@ -19,7 +19,7 @@ from jose import JWTError, jwt
 
 from app.core.config import get_settings
 from app.db.helpers import DatabaseNotAvailableError
-from app.services import user_context_service, user_service
+from app.services import user_service
 
 _bearer = HTTPBearer(auto_error=False)
 
@@ -140,7 +140,6 @@ async def get_current_user(
             auth_provider_user_id=principal.auth_provider_user_id,
             email=principal.email,
         )
-        await user_context_service.warm_user_context(user)
         return user
     except DatabaseNotAvailableError:
         raise HTTPException(status_code=503, detail="Database not available") from None

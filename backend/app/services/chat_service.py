@@ -21,6 +21,11 @@ from app.repositories import chat_repository, message_repository, user_repositor
 _settings = get_settings()
 
 
+async def ensure_indexes() -> None:
+    """Ensure chat query indexes exist in MongoDB."""
+    await chat_repository.ensure_indexes()
+
+
 @cache.cached(
     key_builder=lambda user_id=None: CacheKeys.user_chats(user_id or "all"),
     ttl=_settings.redis_ttl_seconds,
@@ -57,7 +62,7 @@ async def create(user_id: str) -> dict[str, Any] | None:
 
     # Invalidate: user's chat list changed and user doc (chats array).
     await cache.delete(CacheKeys.user_chats(user_id))
-    await cache.delete(CacheKeys.user(user_id))
+    await _invalidate_user_identity_caches(user_id, user)
 
     return chat
 
@@ -80,6 +85,7 @@ async def delete(chat_id: str) -> bool:
         return False
 
     user_id = chat["userId"]
+    user = await user_repository.find_by_id(user_id)
 
     # Sync: remove chatId from the user's chats[] array before deleting.
     await user_repository.remove_chat(user_id, chat_id)
@@ -91,9 +97,27 @@ async def delete(chat_id: str) -> bool:
     # Invalidate: chat gone, user's chat list changed, message history stale.
     await cache.delete(CacheKeys.chat(chat_id))
     await cache.delete(CacheKeys.user_chats(user_id))
-    await cache.delete(CacheKeys.user(user_id))
+    await _invalidate_user_identity_caches(user_id, user)
     # Pattern-delete message caches for this chat (latest + history variants).
     await cache.delete_pattern(CacheKeys.message_latest(chat_id))
     await cache.delete_pattern(f"{CacheKeys.PREFIX}:msg:history:{chat_id}:*")
 
     return True
+
+
+async def _invalidate_user_identity_caches(
+    user_id: str,
+    user: dict[str, Any] | None,
+) -> None:
+    """Invalidate user cache variants that include the mutable chats array."""
+    await cache.delete(CacheKeys.user(user_id))
+
+    if user is None:
+        return
+
+    auth_provider = user.get("authProvider")
+    auth_provider_user_id = user.get("authProviderUserId")
+    if not auth_provider or not auth_provider_user_id:
+        return
+
+    await cache.delete(CacheKeys.auth_user(str(auth_provider), str(auth_provider_user_id)))

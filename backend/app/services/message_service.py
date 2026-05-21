@@ -19,6 +19,11 @@ from app.repositories import message_repository
 _settings = get_settings()
 
 
+async def ensure_indexes() -> None:
+    """Ensure message query indexes exist in MongoDB."""
+    await message_repository.ensure_indexes()
+
+
 @cache.cached(
     key_builder=lambda chat_id=None, limit=50, sort="desc": (
         CacheKeys.message_history(chat_id or "all", limit, sort)

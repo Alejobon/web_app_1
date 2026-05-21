@@ -14,6 +14,7 @@ COLLECTION = "users"
 async def ensure_indexes() -> None:
     """Create unique indexes required by user identity rules."""
     db = get_db()
+    await db[COLLECTION].create_index("userId", unique=True)
     await db[COLLECTION].create_index("username", unique=True)
     await db[COLLECTION].create_index(
         [("authProvider", 1), ("authProviderUserId", 1)],

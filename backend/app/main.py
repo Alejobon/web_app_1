@@ -19,7 +19,7 @@ from app.routers.health import router as health_router
 from app.routers.messages import router as messages_router
 from app.routers.tasks import router as tasks_router
 from app.routers.users import router as users_router
-from app.services import user_service
+from app.services import chat_service, message_service, task_service, user_service
 
 
 @asynccontextmanager
@@ -37,6 +37,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.mongo = mongo
     if mongo.database is not None:
         await user_service.ensure_indexes()
+        await chat_service.ensure_indexes()
+        await message_service.ensure_indexes()
+        await task_service.ensure_indexes()
 
     try:
         yield

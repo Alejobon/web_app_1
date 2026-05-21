@@ -24,6 +24,11 @@ class CacheKeys:
         return f"{CacheKeys.PREFIX}:user:{user_id}"
 
     @staticmethod
+    def auth_user(auth_provider: str, auth_provider_user_id: str) -> str:
+        """Internal user document mapped from an external auth provider user."""
+        return f"{CacheKeys.PREFIX}:auth:{auth_provider}:{auth_provider_user_id}:user"
+
+    @staticmethod
     def user_chats(user_id: str) -> str:
         """Chat list for a specific user."""
         return f"{CacheKeys.PREFIX}:user:{user_id}:chats"
@@ -32,6 +37,22 @@ class CacheKeys:
     def user_context(user_id: str) -> str:
         """Prompt-context snapshot for a specific user."""
         return f"{CacheKeys.PREFIX}:user:{user_id}:context"
+
+    @staticmethod
+    def user_tasks(user_id: str, task_status: str | None = None) -> str:
+        """Task list for a specific user, optionally filtered by status."""
+        status = task_status or "all"
+        return f"{CacheKeys.PREFIX}:user:{user_id}:tasks:{status}"
+
+    @staticmethod
+    def user_tasks_pattern(user_id: str) -> str:
+        """All task-list cache variants for a specific user."""
+        return f"{CacheKeys.PREFIX}:user:{user_id}:tasks:*"
+
+    @staticmethod
+    def task(task_id: str) -> str:
+        """Single task document by taskId."""
+        return f"{CacheKeys.PREFIX}:task:{task_id}"
 
     # ── Chats ─────────────────────────────────────────────────────────
 

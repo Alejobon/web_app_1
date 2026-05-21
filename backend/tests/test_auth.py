@@ -66,6 +66,6 @@ def test_users_me_maps_valid_supabase_token_to_internal_user(monkeypatch) -> Non
     assert response.status_code == 200
     assert response.json()["userId"] == "internal-user-123"
     assert response.json()["authProviderUserId"] == "supabase-user-123"
-    assert warmed_users == ["internal-user-123"]
+    assert warmed_users == []
 
     get_settings.cache_clear()

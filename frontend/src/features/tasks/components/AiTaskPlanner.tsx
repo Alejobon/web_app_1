@@ -138,17 +138,21 @@ export function AiTaskPlanner() {
   }
 
   async function createDraftTasks() {
-    for (const task of drafts) {
-      await createTask.mutateAsync({
+    const tasksToCreate = drafts;
+
+    try {
+      await Promise.all(tasksToCreate.map((task) => createTask.mutateAsync({
         title: task.title,
         description: taskDescription(task),
         status: "pending",
-      });
-    }
+      })));
 
-    setDrafts([]);
-    setInput("");
-    setStreamedText("");
+      setDrafts([]);
+      setInput("");
+      setStreamedText("");
+    } catch {
+      setError("No pude crear todas las tareas. Revisá la lista y reintentá.");
+    }
   }
 
   return (
