@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { createChat, deleteChat, streamChatMessage } from "@/features/chat/api/chat.api";
+import { streamDirectAI } from "@/features/ai/api/direct-ai.api";
 import { useCreateTask } from "@/features/tasks/hooks/useTasks";
 import { normalizeTaskPriority, taskPriorityLabel, type TaskPriority } from "@/features/tasks/lib/task-priority";
 
@@ -111,17 +111,11 @@ export function AiTaskPlanner() {
     setStreamedText("");
     setIsGenerating(true);
 
-    let temporaryChatId: string | null = null;
     let fullResponse = "";
 
     try {
-      const chat = await createChat();
-      temporaryChatId = chat.chatId;
-
-      await streamChatMessage({
-        chatId: chat.chatId,
-        content: buildTaskPlannerPrompt(content),
-        historyLimit: 1,
+      await streamDirectAI({
+        message: buildTaskPlannerPrompt(content),
         onToken: (token) => {
           if (fullResponse.length + token.length > MAX_AI_RESPONSE_LENGTH) return;
           fullResponse += token;
@@ -140,9 +134,6 @@ export function AiTaskPlanner() {
       setError("No pude generar tareas ahora. Probá de nuevo en un momento.");
     } finally {
       setIsGenerating(false);
-      if (temporaryChatId) {
-        deleteChat(temporaryChatId).catch(() => undefined);
-      }
     }
   }
 
@@ -232,3 +223,4 @@ export function AiTaskPlanner() {
     </Card>
   );
 }
+

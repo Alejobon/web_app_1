@@ -1,7 +1,7 @@
-// Meditation session hook — creates a hidden chat, fetches phrases from the LLM,
+// Meditation session hook — fetches direct AI phrases without creating chat history,
 // and manages display timing with fade transitions.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createChat, streamChatMessage } from "@/features/chat/api/chat.api";
+import { streamDirectAI } from "@/features/ai/api/direct-ai.api";
 
 export type MeditationMood =
   | "ansioso"
@@ -112,14 +112,10 @@ export function useMeditationSession() {
       setTotalSeconds(durationSec);
 
       try {
-        // Create a hidden chat for the meditation
-        const chat = await createChat();
-
-        // Stream meditation phrases from the LLM
+        // Stream meditation phrases directly from the LLM without chat persistence.
         let fullText = "";
-        await streamChatMessage({
-          chatId: chat.chatId,
-          content: `${buildSystemPrompt(selectedMood)}\nDuración de referencia: ${durationMinutes} minutos.`,
+        await streamDirectAI({
+          message: `${buildSystemPrompt(selectedMood)}\nDuración de referencia: ${durationMinutes} minutos.`,
           signal: undefined,
           onToken: (token) => {
             fullText += token;
@@ -209,3 +205,4 @@ export function useMeditationSession() {
     reset,
   };
 }
+
