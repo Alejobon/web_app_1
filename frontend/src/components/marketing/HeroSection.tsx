@@ -1,19 +1,47 @@
-import { ArrowRight, CheckCircle2, ListTodo, MessageCircleHeart, Sparkles, Wind } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ListTodo,
+  MessageCircleHeart,
+  Sparkles,
+  Wind,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { Reveal } from "@/components/marketing/Reveal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 const heroStats = [
-  { value: "Chat IA", label: "Escribe libremente y empieza a ordenar lo que te pasa." },
-  { value: "4-7-8", label: "Respiración guiada para bajar la intensidad del momento." },
-  { value: "Tareas", label: "Convierte lo que te abruma en pasos concretos y posibles." },
+  {
+    value: "Chat IA",
+    label: "Escribe libremente y empieza a ordenar lo que te pasa.",
+  },
+  {
+    value: "4-7-8",
+    label: "Respiración guiada para bajar la intensidad del momento.",
+  },
+  {
+    value: "Tareas",
+    label: "Convierte lo que te abruma en pasos concretos y posibles.",
+  },
 ];
 
 const supportFlow = [
-  { icon: MessageCircleHeart, title: "Hablar", text: "Saca lo que tienes en la cabeza sin tener que explicarlo perfecto." },
-  { icon: Wind, title: "Respirar", text: "Baja la intensidad con una pausa guiada y concreta." },
-  { icon: ListTodo, title: "Ordenar", text: "Cierra con próximos pasos pequeños y realistas." },
+  {
+    icon: MessageCircleHeart,
+    title: "Hablar",
+    text: "Saca lo que tienes en la cabeza sin tener que explicarlo perfecto.",
+  },
+  {
+    icon: Wind,
+    title: "Respirar",
+    text: "Baja la intensidad con una pausa guiada y concreta.",
+  },
+  {
+    icon: ListTodo,
+    title: "Ordenar",
+    text: "Cierra con próximos pasos pequeños y realistas.",
+  },
 ];
 
 export function HeroSection() {
@@ -27,7 +55,8 @@ export function HeroSection() {
               className="mx-auto w-fit gap-2 border border-secondary/20 bg-secondary-soft/80 px-4 py-2 text-foreground shadow-sm lg:mx-0"
             >
               <Sparkles className="size-3.5" aria-hidden="true" />
-              Acompañamiento emocional para estudiantes<span className="hidden sm:inline"> en Colombia</span>
+              Acompañamiento emocional para estudiantes
+              <span className="hidden sm:inline">.</span>
             </Badge>
 
             <div className="space-y-5">
@@ -35,17 +64,25 @@ export function HeroSection() {
                 Habla, respira y organiza lo que te abruma
               </h1>
               <p className="mx-auto max-w-xl text-base leading-8 text-muted-foreground md:text-lg lg:mx-0">
-                Desahógate U 2.0 reúne chat de acompañamiento, respiración 4-7-8, meditación guiada y tareas priorizadas para que recuperes claridad entre clases, entregas y parciales.
+                Desahógate U 2.0 reúne chat de acompañamiento, respiración
+                4-7-8, meditación guiada y tareas priorizadas para que recuperes
+                claridad entre clases, entregas y parciales.
               </p>
             </div>
 
             <div className="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link to="/login">
-                  Empezar gratis <ArrowRight className="size-4" aria-hidden="true" />
+                  Empezar gratis{" "}
+                  <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto"
+              >
                 <a href="#features">Descubrir la experiencia</a>
               </Button>
             </div>
@@ -65,31 +102,49 @@ export function HeroSection() {
                       Del desahogo a la acción
                     </p>
                     <p className="mt-4 text-2xl font-black tracking-tight text-foreground md:text-3xl">
-                      Primero te escucha. Luego te ayuda a bajar la intensidad y elegir el siguiente paso.
+                      Primero te escucha. Luego te ayuda a bajar la intensidad y
+                      elegir el siguiente paso.
                     </p>
                     <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                      No es solo un chat: también tienes herramientas concretas para respirar, meditar y transformar lo que sientes en tareas manejables.
+                      No es solo un chat: también tienes herramientas concretas
+                      para respirar, meditar y transformar lo que sientes en
+                      tareas manejables.
                     </p>
                   </div>
 
                   <div className="rounded-[2rem] border border-border/60 bg-card/80 p-5 shadow-sm backdrop-blur">
                     <div className="flex items-center gap-3">
                       <div className="flex size-11 items-center justify-center rounded-full bg-primary-soft text-primary">
-                        <CheckCircle2 className="kinetic-icon size-5" aria-hidden="true" />
+                        <CheckCircle2
+                          className="kinetic-icon size-5"
+                          aria-hidden="true"
+                        />
                       </div>
                       <div>
-                        <p className="text-sm font-black">Hoy puedo empezar por</p>
-                        <p className="text-xs text-muted-foreground">3 minutos de claridad</p>
+                        <p className="text-sm font-black">
+                          Hoy puedo empezar por
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          3 minutos de claridad
+                        </p>
                       </div>
                     </div>
                     <div className="mt-5 space-y-3">
                       {supportFlow.map((item) => (
-                        <div key={item.title} className="rounded-[1.35rem] border border-border/50 bg-background/65 p-3">
+                        <div
+                          key={item.title}
+                          className="rounded-[1.35rem] border border-border/50 bg-background/65 p-3"
+                        >
                           <div className="flex items-center gap-3">
-                      <item.icon className="size-4 text-primary" aria-hidden="true" />
+                            <item.icon
+                              className="size-4 text-primary"
+                              aria-hidden="true"
+                            />
                             <p className="text-sm font-black">{item.title}</p>
                           </div>
-                          <p className="mt-1 text-xs leading-5 text-muted-foreground">{item.text}</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                            {item.text}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -103,8 +158,12 @@ export function HeroSection() {
                       delay={180 + index * 100}
                       className="kinetic-card rounded-[1.75rem] border border-border/60 bg-card/78 p-4 shadow-sm backdrop-blur hover:bg-card/88"
                     >
-                      <p className="text-2xl font-black text-foreground">{item.value}</p>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.label}</p>
+                      <p className="text-2xl font-black text-foreground">
+                        {item.value}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                        {item.label}
+                      </p>
                     </Reveal>
                   ))}
                 </div>
