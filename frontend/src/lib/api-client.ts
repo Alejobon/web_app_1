@@ -4,7 +4,10 @@ import { supabase } from "@/lib/supabase";
 
 export type ApiClientOptions = RequestInit & { auth?: boolean };
 
+// The version prefix belongs to the base URL. Feature APIs must pass resource
+// paths only, for example "/chats", "/users/me", or "/ai/stream".
 const DEFAULT_API_BASE_URL = "http://localhost:8000/api/v1";
+const VERSIONED_API_PATH = /^\/api\/v\d+(\/|$)/;
 
 function normalizeApiBaseUrl(value: string | undefined) {
   const raw = (value ?? DEFAULT_API_BASE_URL).trim();
@@ -20,9 +23,13 @@ function normalizeApiBaseUrl(value: string | undefined) {
   return url.toString().replace(/\/$/, "");
 }
 
-function apiUrl(path: string) {
+export function apiUrl(path: string) {
   if (!path.startsWith("/")) {
     throw new Error("API paths must start with '/'.");
+  }
+
+  if (VERSIONED_API_PATH.test(path)) {
+    throw new Error("API paths must be resource paths like '/chats'; keep '/api/v1' in VITE_API_BASE_URL.");
   }
 
   return apiBaseUrl + path;

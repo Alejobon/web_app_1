@@ -1,5 +1,5 @@
 // Direct AI API — streams model responses without creating chats or persisting messages.
-import { ApiError, apiBaseUrl, getAccessToken } from "@/lib/api-client";
+import { ApiError, apiUrl, getAccessToken } from "@/lib/api-client";
 
 type DirectAIStreamEvent =
   | { type: "token"; content?: string }
@@ -18,7 +18,7 @@ export async function streamDirectAI({ message, signal, onToken, onDone, onError
   const token = await getAccessToken();
   if (!token) throw new ApiError("Sesión requerida", 401);
 
-  const response = await fetch(apiBaseUrl + "/ai/stream", {
+  const response = await fetch(apiUrl("/ai/stream"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
