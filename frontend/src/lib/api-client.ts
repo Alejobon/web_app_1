@@ -4,23 +4,31 @@ import { supabase } from "@/lib/supabase";
 
 export type ApiClientOptions = RequestInit & { auth?: boolean };
 
-// The version prefix belongs to the base URL. Feature APIs must pass resource
-// paths only, for example "/chats", "/users/me", or "/ai/stream".
+// The version prefix belongs to the normalized base URL. Feature APIs must pass
+// resource paths only, for example "/chats", "/users/me", or "/ai/stream".
 const DEFAULT_API_BASE_URL = "http://localhost:8000/api/v1";
+const API_VERSION_PATH = "/api/v1";
+const VERSIONED_API_BASE_PATH = /\/api\/v\d+$/;
 const VERSIONED_API_PATH = /^\/api\/v\d+(\/|$)/;
 
 function normalizeApiBaseUrl(value: string | undefined) {
   const raw = (value ?? DEFAULT_API_BASE_URL).trim();
   if (!raw) return DEFAULT_API_BASE_URL;
 
-  if (raw.startsWith("/")) return raw.replace(/\/$/, "");
+  if (raw.startsWith("/")) {
+    const relativeBaseUrl = raw.replace(/\/$/, "");
+    if (VERSIONED_API_BASE_PATH.test(relativeBaseUrl)) return relativeBaseUrl;
+    return relativeBaseUrl + API_VERSION_PATH;
+  }
 
   const url = new URL(raw);
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     throw new Error("VITE_API_BASE_URL must use http or https.");
   }
 
-  return url.toString().replace(/\/$/, "");
+  const baseUrl = url.toString().replace(/\/$/, "");
+  if (VERSIONED_API_BASE_PATH.test(url.pathname.replace(/\/$/, ""))) return baseUrl;
+  return baseUrl + API_VERSION_PATH;
 }
 
 export function apiUrl(path: string) {
