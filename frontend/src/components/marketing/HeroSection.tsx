@@ -122,7 +122,7 @@ export function HeroSection() {
                       <div>
                         <p className="text-sm font-black">Empieza hoy mismo</p>
                         <p className="text-xs text-muted-foreground">
-                          Con muy pocas acciones:
+                          Con tres acciones simples:
                         </p>
                       </div>
                     </div>
