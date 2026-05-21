@@ -58,7 +58,10 @@ export function MicroactionsSection() {
                 {item.detail}
               </p>
               <Button asChild variant="outline" className="mt-8 w-full">
-                <Link to={item.href}>
+                <Link
+                  to={item.href}
+                  state={item.href === "/p/meditation" ? { from: "/" } : undefined}
+                >
                   Explorar <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               </Button>

@@ -18,31 +18,36 @@ const MOOD_LABELS: Record<MeditationMood, string> = {
   relajarme: "relajación",
 };
 
-function buildSystemPrompt(mood: MeditationMood): string {
+function buildSystemPrompt(
+  mood: MeditationMood,
+  durationMinutes: number,
+): string {
   const moodLabel = MOOD_LABELS[mood];
   return (
-    `Sos un guía de meditación empático y cálido de la app Desahogate. ` +
-    `Generá exactamente 8 frases cortas (máximo 15 palabras cada una) de apoyo emocional ` +
+    `Eres un guía de meditación empático y cálido de la app Desahogate. ` +
+    `Genera exactamente 8 frases cortas (máximo 15 palabras cada una) de apoyo emocional ` +
     `para alguien que siente ${moodLabel}. ` +
+    `La sesión durará ${durationMinutes} minutos, así que las frases deben sentirse adecuadas para ese ritmo. ` +
     `Cada frase va en una línea separada. ` +
-    `Frases cálidas, sin juicio, en español rioplatense. ` +
+    `Usa español neutro, natural y cálido, sin juicio. ` +
+    `No uses voseo, lunfardo, modismos argentinos ni regionalismos marcados. ` +
     `No uses numeración ni guiones. Solo texto, una frase por línea. ` +
     `Ejemplo:\n` +
-    `Respirá profundo, todo está bien\n` +
+    `Respira profundo, todo está bien\n` +
     `No estás solo en esto\n` +
     `Cada respiración te trae paz\n` +
-    `IMPORTANTE: NO MANDES TU RESPUESTA EN MARKDOWN. MANDALA EN TEXTO PLANO`
+    `IMPORTANTE: NO ENVÍES TU RESPUESTA EN MARKDOWN. ENVÍALA EN TEXTO PLANO`
   );
 }
 
 const FALLBACK_PHRASES = [
-  "Respirá profundo, todo está bien",
+  "Respira profundo, todo está bien",
   "No estás solo en esto",
   "Cada respiración te trae paz",
   "Tu mente está en calma",
-  "Sentí cómo el aire recorre tu cuerpo",
+  "Siente cómo el aire recorre tu cuerpo",
   "Estás haciendo un gran esfuerzo",
-  "Merecés este momento de paz",
+  "Mereces este momento de paz",
   "Todo va a estar bien",
 ];
 
@@ -115,7 +120,7 @@ export function useMeditationSession() {
         // Stream meditation phrases directly from the LLM without chat persistence.
         let fullText = "";
         await streamDirectAI({
-          message: `${buildSystemPrompt(selectedMood)}\nDuración de referencia: ${durationMinutes} minutos.`,
+          message: buildSystemPrompt(selectedMood, durationMinutes),
           signal: undefined,
           onToken: (token) => {
             fullText += token;

@@ -18,12 +18,18 @@ const nav = [
 ];
 
 function NavLinks({ collapsed = false, onClick }: { collapsed?: boolean; onClick?: () => void }) {
+  const location = useLocation();
+  const currentPath = `${location.pathname}${location.search}${location.hash}`;
+
   return (
     <nav className="flex flex-col gap-2">
       {nav.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
+          state={
+            item.to === "/p/meditation" ? { from: currentPath } : undefined
+          }
           onClick={onClick}
           className={({ isActive }) =>
             cn(

@@ -1,5 +1,5 @@
 import { Brain, ListTodo, Wind } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const cards = [
   {
@@ -38,6 +38,9 @@ const cards = [
 ];
 
 export function QuickActionCards() {
+  const location = useLocation();
+  const currentPath = `${location.pathname}${location.search}${location.hash}`;
+
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 md:gap-3">
       {cards.map((card) => {
@@ -46,6 +49,9 @@ export function QuickActionCards() {
           <Link
             key={card.href}
             to={card.href}
+            state={
+              card.href === "/p/meditation" ? { from: currentPath } : undefined
+            }
             className={`flex items-center gap-3 rounded-2xl border ${card.border} ${card.bg} p-3 transition-colors ${card.hover} sm:flex-col sm:items-center sm:gap-2 md:p-4`}
           >
             <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} md:h-12 md:w-12`}>
