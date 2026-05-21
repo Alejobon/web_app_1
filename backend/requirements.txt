@@ -1,0 +1,9 @@
+fastapi==0.136.1
+uvicorn[standard]==0.46.0
+pydantic-settings==2.14.0
+python-dotenv==1.2.2
+pymongo==4.17.0
+dnspython==2.8.0
+groq==0.29.0
+upstash-redis
+python-jose[cryptography]==3.5.0

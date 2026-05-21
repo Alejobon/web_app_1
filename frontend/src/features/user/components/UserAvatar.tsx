@@ -1,0 +1,2 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+export function UserAvatar({ user, avatarUrl, fallback = "DU" }: { user?: { username?: string | null; email?: string | null } | null; avatarUrl?: string | null; fallback?: string }) { const label = user?.username || user?.email || fallback; return <Avatar><AvatarImage src={avatarUrl ?? undefined} alt={label} /><AvatarFallback>{label.slice(0, 2).toUpperCase()}</AvatarFallback></Avatar>; }

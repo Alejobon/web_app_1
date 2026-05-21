@@ -1,0 +1,51 @@
+{
+  "name": "desahogate-u-2-frontend",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@assistant-ui/react": "latest",
+    "@radix-ui/react-avatar": "latest",
+    "@radix-ui/react-label": "latest",
+    "@radix-ui/react-separator": "latest",
+    "@radix-ui/react-slot": "latest",
+    "@radix-ui/react-switch": "latest",
+    "@radix-ui/react-tabs": "latest",
+    "@supabase/supabase-js": "latest",
+    "@tanstack/react-query": "latest",
+    "@tanstack/react-query-devtools": "latest",
+    "autoskills": "^0.3.6",
+    "class-variance-authority": "latest",
+    "clsx": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-markdown": "latest",
+    "react-router-dom": "latest",
+    "tailwind-merge": "latest",
+    "zustand": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "latest",
+    "autoprefixer": "latest",
+    "eslint": "latest",
+    "eslint-plugin-react-hooks": "latest",
+    "eslint-plugin-react-refresh": "latest",
+    "postcss": "latest",
+    "tailwindcss": "^3.4.17",
+    "typescript": "latest",
+    "typescript-eslint": "latest",
+    "vite": "latest"
+  },
+  "packageManager": "pnpm@11.1.1"
+}

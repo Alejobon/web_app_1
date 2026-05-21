@@ -1,0 +1,378 @@
+{
+  "client": "thunder-client",
+  "collectionName": "Desahogate API",
+  "dateExported": "2026-05-13T22:30:00.000Z",
+  "version": "1.2",
+  "folders": [
+    {
+      "name": "0. Health",
+      "requests": [
+        {
+          "name": "0a. API Liveness",
+          "method": "GET",
+          "url": "{{baseUrl}}/health",
+          "headers": []
+        },
+        {
+          "name": "0b. Database Health",
+          "method": "GET",
+          "url": "{{baseUrl}}/health/db",
+          "headers": []
+        }
+      ]
+    },
+    {
+      "name": "1. Users",
+      "requests": [
+        {
+          "name": "1. Create User",
+          "method": "POST",
+          "url": "{{baseUrl}}/users",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"username\": \"testuser_thunder\",\n  \"personality\": {\n    \"tone\": \"friendly\",\n    \"language\": \"es\"\n  }\n}"
+          }
+        },
+        {
+          "name": "2. Get User by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/users/{{userId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "3. List All Users",
+          "method": "GET",
+          "url": "{{baseUrl}}/users",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "4. Update User",
+          "method": "PUT",
+          "url": "{{baseUrl}}/users/{{userId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"personality\": {\n    \"tone\": \"calm\",\n    \"language\": \"es\",\n    \"emoji\": true\n  }\n}"
+          }
+        },
+        {
+          "name": "5. Delete User",
+          "method": "DELETE",
+          "url": "{{baseUrl}}/users/{{userId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Chats",
+      "requests": [
+        {
+          "name": "1. Create Chat",
+          "method": "POST",
+          "url": "{{baseUrl}}/chats",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{}"
+          }
+        },
+        {
+          "name": "2. Get Chat by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/chats/{{chatId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "3. List My Chats",
+          "method": "GET",
+          "url": "{{baseUrl}}/chats",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "4. Delete Chat",
+          "method": "DELETE",
+          "url": "{{baseUrl}}/chats/{{chatId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Messages",
+      "requests": [
+        {
+          "name": "1. Create Message (user)",
+          "method": "POST",
+          "url": "{{baseUrl}}/messages",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"chatId\": \"{{chatId}}\",\n  \"role\": \"user\",\n  \"content\": \"Hola, me siento un poco ansioso hoy\"\n}"
+          }
+        },
+        {
+          "name": "2. Stream AI Response (SSE)",
+          "method": "POST",
+          "url": "{{baseUrl}}/chats/{{chatId}}/messages/stream",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"content\": \"¿Qué puedo hacer para sentirme mejor?\"\n}"
+          }
+        },
+        {
+          "name": "3. List Messages (asc)",
+          "method": "GET",
+          "url": "{{baseUrl}}/messages?chat_id={{chatId}}&limit=50&sort=asc",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "4. List Messages (desc)",
+          "method": "GET",
+          "url": "{{baseUrl}}/messages?chat_id={{chatId}}&limit=10&sort=desc",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "5. Get Latest Message",
+          "method": "GET",
+          "url": "{{baseUrl}}/messages/latest/{{chatId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "6. Get Message by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/messages/{{messageId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "7. Update Message",
+          "method": "PUT",
+          "url": "{{baseUrl}}/messages/{{messageId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"content\": \"Mensaje editado\"\n}"
+          }
+        },
+        {
+          "name": "8. Delete Message",
+          "method": "DELETE",
+          "url": "{{baseUrl}}/messages/{{messageId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Tasks",
+      "requests": [
+        {
+          "name": "1. Create Task",
+          "method": "POST",
+          "url": "{{baseUrl}}/tasks",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"title\": \"Completar onboarding\",\n  \"description\": \"Configurar perfil y primer chat con la IA\",\n  \"status\": \"pending\"\n}"
+          }
+        },
+        {
+          "name": "2. Get Task by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/tasks/{{taskId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "3. List My Tasks (filtered)",
+          "method": "GET",
+          "url": "{{baseUrl}}/tasks?task_status=pending",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "4. Update Task",
+          "method": "PUT",
+          "url": "{{baseUrl}}/tasks/{{taskId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"title\": \"Completar onboarding - revisado\",\n  \"status\": \"done\"\n}"
+          }
+        },
+        {
+          "name": "5. Delete Task",
+          "method": "DELETE",
+          "url": "{{baseUrl}}/tasks/{{taskId}}",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "environments": [
+    {
+      "name": "Local Development",
+      "variables": [
+        {
+          "name": "baseUrl",
+          "value": "http://localhost:8000/api/v1"
+        },
+        {
+          "name": "accessToken",
+          "value": ""
+        },
+        {
+          "name": "userId",
+          "value": ""
+        },
+        {
+          "name": "chatId",
+          "value": ""
+        },
+        {
+          "name": "messageId",
+          "value": ""
+        },
+        {
+          "name": "taskId",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

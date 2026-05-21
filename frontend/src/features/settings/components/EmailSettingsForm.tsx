@@ -1,0 +1,2 @@
+import { Switch } from "@/components/ui/switch";
+export function EmailSettingsForm() { return <div className="space-y-3 rounded-3xl border bg-card p-5"><h3 className="text-xl font-black">Email</h3><div className="flex items-center justify-between rounded-2xl bg-muted p-4"><span className="text-sm font-bold">Resumen semanal futuro</span><Switch /></div><div className="flex items-center justify-between rounded-2xl bg-muted p-4"><span className="text-sm font-bold">Recordatorios suaves</span><Switch defaultChecked /></div></div>; }

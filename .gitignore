@@ -1,0 +1,28 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Logs and runtime output
+*.log
+logs/
+**/logs/
+
+# Node dependencies and builds
+node_modules/
+**/node_modules/
+.pnpm-store/
+**/.pnpm-store/
+*.tsbuildinfo
+dist/
+**/dist/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/

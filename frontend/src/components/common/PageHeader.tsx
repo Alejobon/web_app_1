@@ -1,0 +1,2 @@
+import { cn } from "@/lib/cn";
+export function PageHeader({ eyebrow, title, description, className }: { eyebrow?: string; title: string; description?: string; className?: string }) { return <div className={cn("space-y-2", className)}>{eyebrow && <p className="text-sm font-black uppercase tracking-[0.22em] text-primary">{eyebrow}</p>}<h1 className="text-3xl font-black tracking-tight md:text-4xl">{title}</h1>{description && <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p>}</div>; }

@@ -1,0 +1,2 @@
+import { Button } from "@/components/ui/button";
+export function DeleteAccountSection() { return <div className="rounded-3xl border border-destructive/20 bg-destructive/10 p-5"><h3 className="text-xl font-black text-destructive">Eliminar cuenta</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">Placeholder seguro. No llama a ningún endpoint hasta que el backend defina el flujo.</p><Button className="mt-4" variant="destructive" disabled>Eliminar cuenta</Button></div>; }
