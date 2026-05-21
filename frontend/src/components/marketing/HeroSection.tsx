@@ -30,7 +30,7 @@ const supportFlow = [
   {
     icon: MessageCircleHeart,
     title: "Hablar",
-    text: "Saca lo que tienes en la cabeza sin tener que explicarlo perfecto.",
+    text: "Expresa tus ideas y sentimientos como te haga sentir más comod@.",
   },
   {
     icon: Wind,
@@ -82,7 +82,7 @@ export function HeroSection() {
                 variant="outline"
                 className="w-full sm:w-auto"
               >
-                <a href="#features">Descubrir la experiencia</a>
+                <a href="#features">Descubre los beneficios</a>
               </Button>
             </div>
           </Reveal>
@@ -120,11 +120,9 @@ export function HeroSection() {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-black">
-                          Hoy puedo empezar por
-                        </p>
+                        <p className="text-sm font-black">Empieza hoy mismo</p>
                         <p className="text-xs text-muted-foreground">
-                          3 minutos de claridad
+                          Con muy pocas acciones:
                         </p>
                       </div>
                     </div>
