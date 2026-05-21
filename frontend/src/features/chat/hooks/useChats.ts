@@ -23,7 +23,7 @@ export function useCreateChat() {
           current?.filter((item) => item.chatId !== chat.chatId) ?? [];
         return [chat, ...withoutCurrent];
       });
-      await queryClient.invalidateQueries({ queryKey: ["chats"] });
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
     },
   });
 }
