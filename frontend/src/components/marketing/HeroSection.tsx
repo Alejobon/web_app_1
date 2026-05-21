@@ -55,8 +55,7 @@ export function HeroSection() {
               className="mx-auto w-fit gap-2 border border-secondary/20 bg-secondary-soft/80 px-4 py-2 text-foreground shadow-sm lg:mx-0"
             >
               <Sparkles className="size-3.5" aria-hidden="true" />
-              Acompañamiento emocional para estudiantes
-              <span className="hidden sm:inline">.</span>
+              Acompañamiento emocional para estudiantes.
             </Badge>
 
             <div className="space-y-5">
