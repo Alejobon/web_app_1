@@ -34,12 +34,21 @@ export function ChatShell() {
               <div className="border-b border-border/60 bg-background/85 px-4 py-3 backdrop-blur-sm xl:hidden">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-black text-foreground">Tus chats</p>
+                    <p className="text-sm font-black text-foreground">
+                      Tus chats
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {activeChatId ? "Seguís donde lo dejaste." : "Elegí o creá una conversación."}
+                      {activeChatId
+                        ? "Seguís donde lo dejaste."
+                        : "Elegí o creá una conversación."}
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" className="rounded-full" onClick={() => setMobileSidebarOpen(true)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full"
+                    onClick={() => setMobileSidebarOpen(true)}
+                  >
                     <PanelLeft className="h-4 w-4" />
                     Ver chats
                   </Button>
@@ -52,7 +61,11 @@ export function ChatShell() {
 
               <div className="relative flex min-h-0 flex-1 flex-col bg-background/60 backdrop-blur-sm xl:p-5">
                 <div className="flex min-h-0 flex-1 flex-col p-3 sm:p-4 xl:p-0">
-                  {activeChatId ? <AssistantThread chatId={activeChatId} /> : <ChatEmptyState />}
+                  {activeChatId ? (
+                    <AssistantThread chatId={activeChatId} />
+                  ) : (
+                    <ChatEmptyState />
+                  )}
                 </div>
               </div>
             </div>
@@ -60,17 +73,29 @@ export function ChatShell() {
         </div>
 
         {mobileSidebarOpen && (
-          <div className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm xl:hidden" onClick={() => setMobileSidebarOpen(false)}>
+          <div
+            className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm xl:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          >
             <div
               className="absolute inset-y-0 left-0 flex w-full max-w-sm flex-col border-r border-border/60 bg-background p-4 shadow-2xl"
               onClick={(event) => event.stopPropagation()}
             >
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-black text-foreground">Conversaciones</p>
-                  <p className="text-sm text-muted-foreground">Entrá, creá o retomá un chat.</p>
+                  <p className="text-lg font-black text-foreground">
+                    Conversaciones
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Entra, crea o retoma un chat.
+                  </p>
                 </div>
-                <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setMobileSidebarOpen(false)}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={() => setMobileSidebarOpen(false)}
+                >
                   <X className="h-5 w-5" />
                 </Button>
               </div>
