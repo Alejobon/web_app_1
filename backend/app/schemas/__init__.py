@@ -8,6 +8,7 @@ All public names are re-exported here for convenience::
 
 from app.schemas.chat import ChatCreate, ChatResponse, ChatUpdate
 from app.schemas.chat_stream import ChatStreamRequest
+from app.schemas.direct_ai import DirectAIStreamRequest
 from app.schemas.message import MessageCreate, MessageResponse, MessageUpdate
 from app.schemas.task import TaskCreate, TaskResponse, TaskUpdate
 from app.schemas.user import UserCreate, UserResponse, UserUpdate
@@ -23,6 +24,8 @@ __all__ = [
     "ChatResponse",
     # chat stream
     "ChatStreamRequest",
+    # direct AI
+    "DirectAIStreamRequest",
     # message
     "MessageCreate",
     "MessageUpdate",

@@ -1,6 +1,6 @@
 # Consumir la API desde un frontend
 
-Esta guía deja el camino feliz para integrar un frontend con el backend de Desahogate: CORS, autenticación con Supabase, requests CRUD y streaming del chat IA.
+Esta guía deja el camino feliz para integrar un frontend con el backend de Desahogate: CORS, autenticación con Supabase, requests CRUD, streaming del chat IA y streaming directo de IA.
 
 ## Camino rápido
 
@@ -10,6 +10,7 @@ Esta guía deja el camino feliz para integrar un frontend con el backend de Desa
 4. Usá `GET /api/v1/users/me` para obtener/crear el usuario interno.
 5. Creá un chat con `POST /api/v1/chats`.
 6. Enviá mensajes al LLM con `POST /api/v1/chats/{chatId}/messages/stream` usando `fetch` streaming.
+7. Si necesitás hablar con la IA sin chat ni persistencia, usá `POST /api/v1/ai/stream`.
 
 ## Variables backend necesarias
 
@@ -215,6 +216,87 @@ await streamChatMessage({
 });
 ```
 
+## Streaming directo de IA
+
+Usá este endpoint cuando necesitás una respuesta directa del modelo sin crear chat, sin guardar mensajes y sin cargar historial/contexto del usuario.
+
+Endpoint:
+
+```http
+POST /api/v1/ai/stream
+Authorization: Bearer <supabase_access_token>
+Content-Type: application/json
+```
+
+Body:
+
+```json
+{
+  "message": "Necesito una respuesta rápida para mostrar en pantalla"
+}
+```
+
+Eventos SSE:
+
+```ts
+type DirectAIStreamEvent =
+  | { type: "token"; content: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
+```
+
+Consumo desde frontend:
+
+```ts
+export async function streamDirectAI(params: {
+  token: string;
+  message: string;
+  onToken: (token: string) => void;
+  onDone?: () => void;
+}) {
+  const response = await fetch(`${API_BASE_URL}/ai/stream`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${params.token}`,
+    },
+    body: JSON.stringify({ message: params.message }),
+  });
+
+  if (!response.ok || !response.body) {
+    throw new Error("Direct AI streaming request failed");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const events = buffer.split("\n\n");
+    buffer = events.pop() ?? "";
+
+    for (const rawEvent of events) {
+      const line = rawEvent
+        .split("\n")
+        .find((entry) => entry.startsWith("data: "));
+      if (!line) continue;
+
+      const event = JSON.parse(line.slice(6)) as DirectAIStreamEvent;
+
+      if (event.type === "token") params.onToken(event.content);
+      if (event.type === "done") params.onDone?.();
+      if (event.type === "error") throw new Error(event.message);
+    }
+  }
+}
+```
+
+> Diferencia CLAVE: `/ai/stream` no devuelve `messageId` porque no persiste nada. Si querés guardar conversación, usá `/chats/{chatId}/messages/stream`.
+
 ## Contratos principales
 
 ### User
@@ -296,6 +378,7 @@ Las tareas siguen siendo la fuente visual para la UI. El backend solo toma un sn
 | `403 Forbidden` | Intentás leer recurso de otro usuario | usar IDs obtenidos desde `/users/me` y `/chats` |
 | Stream devuelve `error` | Groq no configurado o falló provider | revisar `GROQ_API_KEY` y logs backend |
 | Stream devuelve `El servicio de IA está con mucha demanda` | El backend limitó llamadas al LLM para proteger la API key | reintentar después de unos segundos |
+| `/ai/stream` no devuelve `messageId` | Es streaming directo sin persistencia | usar `/chats/{chatId}/messages/stream` si necesitás guardar mensajes |
 
 ## Checklist frontend
 
@@ -305,5 +388,6 @@ Las tareas siguen siendo la fuente visual para la UI. El backend solo toma un sn
 - [ ] Cada request protegida manda `Authorization: Bearer ...`.
 - [ ] Después del login se llama `GET /users/me`.
 - [ ] La UI usa `fetch` streaming para `/messages/stream`, no `EventSource`.
+- [ ] Para IA directa sin persistencia, la UI usa `POST /ai/stream` con `{ message }`.
 - [ ] El chat envía solo `{ content }`; no manda `personality`, `tasks` ni `userId`.
 - [ ] El frontend nunca recibe ni usa `_id` de Mongo.

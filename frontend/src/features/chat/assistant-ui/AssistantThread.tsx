@@ -1,6 +1,6 @@
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { HeartHandshake, Loader2, Mic, SendHorizontal, Smile } from "lucide-react";
+import { HeartHandshake, Loader2, SendHorizontal, Smile } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { ErrorState } from "@/components/common/ErrorState";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,19 @@ import { buildChatPrompt, displayChatContent } from "@/features/chat/lib/chat-co
 import { useChatStore } from "@/features/chat/store/chat.store";
 import type { ChatMessageRole } from "@/features/chat/chat.types";
 import { useCreateTask } from "@/features/tasks/hooks/useTasks";
+
+const EMOJI_OPTIONS = [
+  { emoji: "🙂", label: "sonrisa suave" },
+  { emoji: "😌", label: "calma" },
+  { emoji: "😔", label: "tristeza" },
+  { emoji: "😢", label: "llanto" },
+  { emoji: "😰", label: "ansiedad" },
+  { emoji: "🫶", label: "cariño" },
+  { emoji: "💙", label: "corazón azul" },
+  { emoji: "🙏", label: "gratitud" },
+  { emoji: "✨", label: "claridad" },
+  { emoji: "🌿", label: "respiro" },
+] as const;
 
 function taskSuggestions(text: string) {
   return text
@@ -133,32 +146,107 @@ function Composer({
   onSubmit: (content: string) => Promise<void>;
 }) {
   const [draft, setDraft] = useState("");
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const composerRef = useRef<HTMLFormElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (!emojiOpen) return;
+
+    function closeOnOutsideClick(event: PointerEvent) {
+      if (composerRef.current?.contains(event.target as Node)) return;
+      setEmojiOpen(false);
+    }
+
+    window.addEventListener("pointerdown", closeOnOutsideClick);
+    return () => window.removeEventListener("pointerdown", closeOnOutsideClick);
+  }, [emojiOpen]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const content = draft.trim();
     if (!content || disabled) return;
+    setEmojiOpen(false);
     setDraft("");
     await onSubmit(content);
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Escape" && emojiOpen) {
+      setEmojiOpen(false);
+      return;
+    }
+
     if (event.key !== "Enter" || event.shiftKey) return;
     event.preventDefault();
     event.currentTarget.form?.requestSubmit();
   }
 
+  function insertEmoji(emoji: string) {
+    if (disabled) return;
+
+    const textarea = textareaRef.current;
+    const selectionStart = textarea?.selectionStart ?? draft.length;
+    const selectionEnd = textarea?.selectionEnd ?? selectionStart;
+    const nextDraft = draft.slice(0, selectionStart) + emoji + draft.slice(selectionEnd);
+    const nextCursor = selectionStart + emoji.length;
+
+    setDraft(nextDraft);
+    setEmojiOpen(false);
+
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus();
+      textareaRef.current?.setSelectionRange(nextCursor, nextCursor);
+    });
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-1.5 rounded-3xl border bg-card/95 p-1.5 shadow-soft sm:gap-2 sm:p-2">
-      <button
-        type="button"
-        className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted sm:flex"
-        aria-label="Emoji"
-      >
-        <Smile className="h-5 w-5" />
-      </button>
+    <form
+      ref={composerRef}
+      onSubmit={handleSubmit}
+      className="relative flex items-end gap-1.5 rounded-3xl border bg-card/95 p-1.5 shadow-soft sm:gap-2 sm:p-2"
+    >
+      <div className="relative shrink-0">
+        <button
+          type="button"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label={emojiOpen ? "Cerrar selector de emojis" : "Abrir selector de emojis"}
+          aria-expanded={emojiOpen}
+          aria-haspopup="dialog"
+          aria-controls="chat-emoji-picker"
+          disabled={disabled}
+          onClick={() => setEmojiOpen((current) => !current)}
+        >
+          <Smile className="h-5 w-5" />
+        </button>
+
+        {emojiOpen && (
+          <div
+            id="chat-emoji-picker"
+            role="dialog"
+            aria-label="Elegir emoji"
+            className="absolute bottom-12 left-0 z-20 grid w-56 grid-cols-5 gap-1 rounded-2xl border border-border/80 bg-card/98 p-2 shadow-[0_18px_50px_hsl(var(--foreground)/0.14)] backdrop-blur-md"
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setEmojiOpen(false);
+            }}
+          >
+            {EMOJI_OPTIONS.map(({ emoji, label }) => (
+              <button
+                key={emoji}
+                type="button"
+                className="flex h-9 w-9 items-center justify-center rounded-xl text-lg transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                aria-label={`Insertar emoji ${label}`}
+                onClick={() => insertEmoji(emoji)}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <textarea
+        ref={textareaRef}
         rows={1}
         autoFocus
         value={draft}
@@ -168,14 +256,6 @@ function Composer({
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={handleKeyDown}
       />
-
-      <button
-        type="button"
-        className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted sm:flex"
-        aria-label="Grabar audio"
-      >
-        <Mic className="h-5 w-5" />
-      </button>
 
       <Button
         type="submit"

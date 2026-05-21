@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.cache import redis as cache_redis
 from app.core.config import get_settings
 from app.db.mongo import mongo
+from app.routers.ai import router as ai_router
 from app.routers.chats import router as chats_router
 from app.routers.health import router as health_router
 from app.routers.messages import router as messages_router
@@ -71,6 +72,7 @@ app.include_router(users_router, prefix="/api/v1")
 app.include_router(chats_router, prefix="/api/v1")
 app.include_router(messages_router, prefix="/api/v1")
 app.include_router(tasks_router, prefix="/api/v1")
+app.include_router(ai_router, prefix="/api/v1")
 
 
 @app.get("/")
