@@ -27,7 +27,8 @@ function normalizeApiBaseUrl(value: string | undefined) {
   }
 
   const baseUrl = url.toString().replace(/\/$/, "");
-  if (VERSIONED_API_BASE_PATH.test(url.pathname.replace(/\/$/, ""))) return baseUrl;
+  if (VERSIONED_API_BASE_PATH.test(url.pathname.replace(/\/$/, "")))
+    return baseUrl;
   return baseUrl + API_VERSION_PATH;
 }
 
@@ -37,7 +38,9 @@ export function apiUrl(path: string) {
   }
 
   if (VERSIONED_API_PATH.test(path)) {
-    throw new Error("API paths must be resource paths like '/chats'; keep '/api/v1' in VITE_API_BASE_URL.");
+    throw new Error(
+      "API paths must be resource paths like '/chats'; keep '/api/v1' in VITE_API_BASE_URL.",
+    );
   }
 
   return apiBaseUrl + path;
@@ -48,7 +51,11 @@ export const apiBaseUrl = normalizeApiBaseUrl(
 );
 
 export class ApiError extends Error {
-  constructor(message: string, public readonly status: number, public readonly payload?: unknown) {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly payload?: unknown,
+  ) {
     super(message);
     this.name = "ApiError";
   }
@@ -59,18 +66,41 @@ export async function getAccessToken() {
   return data.session?.access_token;
 }
 
-export async function apiClient<T>(path: string, options: ApiClientOptions = {}): Promise<T> {
+export async function apiClient<T>(
+  path: string,
+  options: ApiClientOptions = {},
+): Promise<T> {
   const { auth = true, headers, body, ...init } = options;
   const requestHeaders = new Headers(headers);
-  if (body && !requestHeaders.has("Content-Type")) requestHeaders.set("Content-Type", "application/json");
+  if (body && !requestHeaders.has("Content-Type"))
+    requestHeaders.set("Content-Type", "application/json");
   if (auth) {
     const token = await getAccessToken();
     if (!token) throw new ApiError("Sesión requerida", 401);
     requestHeaders.set("Authorization", "Bearer " + token);
   }
-  const response = await fetch(apiUrl(path), { ...init, headers: requestHeaders, body });
+  const response = await fetch(apiUrl(path), {
+    ...init,
+    headers: requestHeaders,
+    body,
+  });
   const contentType = response.headers.get("content-type") ?? "";
-  const payload = contentType.includes("application/json") ? await response.json() : await response.text();
-  if (!response.ok) throw new ApiError(response.statusText || "Error de API", response.status, payload);
+  let payload: unknown = undefined;
+
+  if (response.status !== 204) {
+    const text = await response.text();
+
+    if (text) {
+      payload = contentType.includes("application/json")
+        ? JSON.parse(text)
+        : text;
+    }
+  }
+  if (!response.ok)
+    throw new ApiError(
+      response.statusText || "Error de API",
+      response.status,
+      payload,
+    );
   return payload as T;
 }
